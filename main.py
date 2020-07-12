@@ -5,32 +5,35 @@ from hopcroft import HopcroftAlghorithm
 from moore import MooreAlghorithm
 from symbols import acceptingStateChar, startStateChar, noTransitionChar
 import argparse
-from helpers import minimalistDFAfromFile
+from helpers import minimalistDFAfromFile, printOutToFrontend
+from flask import Flask, request, abort
+from flask_cors import CORS, cross_origin
+import json
 
-def main():
-    parser = argparse.ArgumentParser(description='Minimizes automata from file using Hopcroft or Moore alghorithm')
-    parser.add_argument('filePath', metavar='f', help='path to transition table of DFA')
-    parser.add_argument('alghorithm', metavar='a', help='alghorithm name to use: moore or hopcroft')
-    parser.add_argument('--logPath', metavar='l', help='path to store log file')
-    args = parser.parse_args()
+app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
-    # W pliku log.txt jest szczegółowy opis kroków jakie podejmuje algorytm
-    logPath = sys.argv[0]
-    fileName = sys.argv[1]
-    alghorithmName = sys.argv[2].lower().strip()
-    if logPath:
-        logPath = 'zad66/log.txt'
-    automata = minimalistDFAfromFile(fileName)
-    hopcroft = HopcroftAlghorithm(logPath)
+@app.route('/minimize',methods=['GET','POST'])
+@cross_origin()
+def minimize():
+    try:
+        data = json.loads(request.data)
+        minimizationType = int(data['type'])
+        rawAutomata = data['automata']
 
-    if alghorithmName == 'moore':
-        moore = MooreAlghorithm(logPath)
-        print(moore.minimize(automata))
-    elif alghorithmName == 'hopcroft':
-        print(hopcroft.minimize(automata))
-    else:
-        print(hopcroft.minimize(automata))
+        startingState = rawAutomata['startingState']
+        transitionTable = rawAutomata['transitions']
+        finalStates = [i for i, state in enumerate(rawAutomata["states"]) if state is 1]
 
-if __name__ == "__main__":
-    main()
+        minimalDFA = MinimalistDFA(startingState,finalStates,transitionTable)
+        printOut = ""
+        if minimizationType == 0:
+            printOut = MooreAlghorithm('log.txt').minimize(minimalDFA)
+        else:
+            printOut = HopcroftAlghorithm('log.txt').minimize(minimalDFA)
 
+        processed = printOutToFrontend(printOut,rawAutomata["symbolsLookup"], rawAutomata["statesLookup"])
+        return json.dumps(processed.__dict__)
+    except Exception as error:
+        return("Error occured during minimalization")

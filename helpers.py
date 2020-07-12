@@ -1,5 +1,5 @@
 from symbols import acceptingStateChar, startStateChar, noTransitionChar
-from dfa import MinimalistDFA
+from dfa import MinimalistDFA, FrontendDFA
 
 def minimalistDFAfromFile(filePath):
     startingState = 0
@@ -49,9 +49,9 @@ def getAutomataPrintOut(P,automata):
         printOut+=acceptingStateChar if addFinishStateMarker else ""
         printOut+=startStateChar if addStartStateMarker else ""
         printOut+="\t"
-        printOut+='\t'.join(helperSet[x] for x in automata.transitionTable[subset[0]]);
+        printOut+='\t'.join(helperSet[str(x)] for x in automata.transitionTable[subset[0]]);
         printOut+="\n"
-    return printOut
+    return printOut[:-1]
 
 def splitOff(array,toSplit):
     a = []
@@ -65,3 +65,38 @@ def splitOff(array,toSplit):
         return [a,b]
     else:
         return [a]
+
+def printOutToFrontend(printOut, symbolsLookup, statesLookup):
+    startingState = 0
+    index = 0
+    statesLookup = {y:x for x,y in statesLookup.items()}
+    transitionTable = []
+    newStatesLookup = {}
+    splitedByLines = printOut.strip().split("\n")
+    splitedByLines = splitedByLines[1:]
+    states = [0] * len(splitedByLines)
+
+    for line in splitedByLines:
+        splitedLine = line.strip().split("\t")
+        if startStateChar in splitedLine[0]:
+            startingState = index
+        if acceptingStateChar in splitedLine[0]:
+            states[index] = 1
+        for i, gluedStates in enumerate(splitedLine):
+            if startStateChar in gluedStates or acceptingStateChar in gluedStates:
+                gluedStates = gluedStates[:-1]
+            newStateName = ''.join([statesLookup[int(state)] for state in list(gluedStates)])
+            newStatesLookup[newStateName] = index
+            break
+        index+=1
+
+    for line in splitedByLines:
+        splitedLine = line.strip().split("\t")
+        transition = []
+        for i, gluedStates in enumerate(splitedLine):
+            if i==0: continue
+            newStateName = ''.join([statesLookup[int(state)] for state in list(gluedStates)])
+            transition.append(newStatesLookup[newStateName])
+        transitionTable.append(transition)
+
+    return FrontendDFA(startingState,transitionTable,states,newStatesLookup,symbolsLookup)

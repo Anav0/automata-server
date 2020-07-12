@@ -34,3 +34,18 @@ class MinimalistDFA:
                     else:
                         self.entriesTable[int(enteredState)][k] = [i]
         return self.entriesTable
+
+class FrontendDFA:
+    startingState = 0
+    transitions = []
+    states = []
+    statesLookup = {}
+    symbolsLookup = {}
+
+    def __init__(self,startingState,transitions,states,statesLookup,symbolsLookup):
+        self.startingState=startingState
+        self.transitions=transitions
+        self.states = states
+        self.statesLookup=statesLookup
+        self.symbolsLookup=symbolsLookup
+
