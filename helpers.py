@@ -80,8 +80,10 @@ def printOutToFrontend(printOut, symbolsLookup, statesLookup):
         splitedLine = line.strip().split("\t")
         if startStateChar in splitedLine[0]:
             startingState = index
+            splitedLine[0] = splitedLine[0][:-1]
         if acceptingStateChar in splitedLine[0]:
             states[index] = 1
+            splitedLine[0] = splitedLine[0][:-1]
         for i, gluedStates in enumerate(splitedLine):
             if startStateChar in gluedStates or acceptingStateChar in gluedStates:
                 gluedStates = gluedStates[:-1]

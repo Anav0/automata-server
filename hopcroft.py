@@ -9,6 +9,8 @@ class HopcroftAlghorithm:
         self.loger = Loger(logPath)
         self.loger.clear()
 
+
+
     def minimize(self, automata):
         L = []
         P = [automata.finalStates]
@@ -33,6 +35,11 @@ class HopcroftAlghorithm:
 
         # as long as there are elements in L
         loopCounter = 1;
+
+        # If there is only one state
+        if len(P[0]) < 1 or len(P[1]) < 1:
+            return None
+
         while L:
             self.loger.log('\n======== {}. loop ========\n'.format(loopCounter))
             self.loger.log('P: {}'.format(P))
@@ -41,7 +48,6 @@ class HopcroftAlghorithm:
             splited = itemFromL.split(symbolSplitChar)
             states = splited[0].split(statesSplitChar)
             symbol = splited[1]
-            #print('{} {} {}'.format(splited,states,symbol))
             whatEnteres = []
             for state in states:
                 potentialEntry = automata.entriesTable[int(state)][int(symbol)]
@@ -100,11 +106,12 @@ class HopcroftAlghorithm:
                     self.loger.log('\n{}. B: {} cannot be broken by {}'.format(i+1,B,whatEnteres))
             P = tmpP
             loopCounter+=1
-        self.loger.log("\n")
-        self.loger.log('Final P: {}'.format(P))
-        automataPrint = getAutomataPrintOut(P,automata)
-        self.loger.log("\nMinimized automata transition table:\n")
-        self.loger.log(automataPrint)
+            self.loger.log("\n")
+            self.loger.log('Final P: {}'.format(P))
+            automataPrint = getAutomataPrintOut(P,automata)
+            self.loger.log("\nMinimized automata transition table:\n")
+            self.loger.log(automataPrint)
+
         return automataPrint;
 
 

@@ -48,4 +48,38 @@ class FrontendDFA:
         self.states = states
         self.statesLookup=statesLookup
         self.symbolsLookup=symbolsLookup
+        self.validate()
 
+    def validate(self):
+        if self.startingState is None:
+            raise Exception('Starting state cannot be null')
+        if self.transitions is None or len(self.transitions) < 1:
+            raise Exception('No transitions found')
+        if self.states is None or len(self.states) < 1:
+            raise Exception('No states found')
+        if self.states is None or len(self.states) < 1:
+            raise Exception('No states found')
+
+        for key in self.statesLookup:
+            stateName = key.strip()
+            if stateName == "":
+                raise Exception('One of states has no name')
+
+        finalStates = [i for i, state in enumerate(self.states) if state is 1]
+
+        if finalStates is None or len(finalStates) < 1:
+            raise Exception('No final states found')
+
+        flipedSymbolsLookup = {value: key for key, value in self.symbolsLookup.items()}
+        flipedStateLookup = {value: key for key, value in self.statesLookup.items()}
+        numberOfSymbols = len(self.symbolsLookup)
+        errorMsg = ""
+        for stateIndex, transition in enumerate(self.transitions):
+            for i in range(numberOfSymbols):
+                missingSymbols = ''
+                if i >= len(transition):
+                    errorMsg += 'State {}  lacks transition via {}\n'.format(flipedStateLookup[stateIndex], flipedSymbolsLookup[i])
+                elif i < len(transition) and transition[i] is None:
+                    errorMsg += 'State {} lacks transition via {}\n'.format(flipedStateLookup[stateIndex], flipedSymbolsLookup[i])
+
+        if errorMsg: raise Exception(errorMsg)

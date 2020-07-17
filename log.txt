@@ -5,18 +5,13 @@ Pair: [2,0] symbol: 0
 Pair: [2,0] symbol: 1
 ---------
 Pair: [2,1] symbol: 0
-2 is entered by: 1 2 3
+2 is entered by: 1 2
 1 is entered by: 0
 Can be added: 1 0
-Can be added: 3 0
 ---------
 Pair: [2,1] symbol: 1
----------
-Pair: [2,3] symbol: 0
----------
-Pair: [2,3] symbol: 1
-2 is entered by: 1 2 3
-3 is entered by: 0
+2 is entered by: 1 2
+1 is entered by: 0
 
 Tura 2
 ---------
@@ -24,20 +19,13 @@ Pair: [1,0] symbol: 0
 ---------
 Pair: [1,0] symbol: 1
 
-Tura 3
----------
-Pair: [3,0] symbol: 0
----------
-Pair: [3,0] symbol: 1
 
+[0, 2, 1]
+   [0, 1]
+      [0]
 
-[0, 2, 1, 2]
-   [0, 1, 0]
-      [0, 1]
-         [0]
-
-Glued states: [[3, 1], [0], [2]]
+Glued states: [[0], [1], [2]]
 	0	1	
-31	2	2
-0_	31	31
+0_	1	1
+1	2	2
 2'	2	2
