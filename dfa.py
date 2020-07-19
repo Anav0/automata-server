@@ -1,4 +1,5 @@
 from symbols import acceptingStateChar, startStateChar, noTransitionChar
+from apiError import ApiError
 
 class MinimalistDFA:
     startingState = 0
@@ -52,23 +53,21 @@ class FrontendDFA:
 
     def validate(self):
         if self.startingState is None:
-            raise Exception('Starting state cannot be null')
+            raise ApiError('No starting state','Starting state cannot be null')
         if self.transitions is None or len(self.transitions) < 1:
-            raise Exception('No transitions found')
+            raise ApiError('No transitions','No transitions found')
         if self.states is None or len(self.states) < 1:
-            raise Exception('No states found')
-        if self.states is None or len(self.states) < 1:
-            raise Exception('No states found')
+            raise ApiError('Lack of states','No states found')
 
         for key in self.statesLookup:
             stateName = key.strip()
             if stateName == "":
-                raise Exception('One of states has no name')
+                raise ApiError('Noname state','One of states has no name')
 
         finalStates = [i for i, state in enumerate(self.states) if state is 1]
 
         if finalStates is None or len(finalStates) < 1:
-            raise Exception('No final states found')
+            raise ApiError('No final state','No final states found')
 
         flipedSymbolsLookup = {value: key for key, value in self.symbolsLookup.items()}
         flipedStateLookup = {value: key for key, value in self.statesLookup.items()}
@@ -82,4 +81,4 @@ class FrontendDFA:
                 elif i < len(transition) and transition[i] is None:
                     errorMsg += 'State {} lacks transition via {}\n'.format(flipedStateLookup[stateIndex], flipedSymbolsLookup[i])
 
-        if errorMsg: raise Exception(errorMsg)
+        if errorMsg: raise ApiError('Inconsistent transitions',errorMsg)

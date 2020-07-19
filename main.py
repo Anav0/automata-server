@@ -8,6 +8,7 @@ import argparse
 from helpers import minimalistDFAfromFile, printOutToFrontend
 from flask import Flask, request, abort
 from flask_cors import CORS, cross_origin
+from apiError import ApiError
 import json
 
 app = Flask(__name__)
@@ -24,21 +25,21 @@ def minimize():
         if minimizationType is None: minimizationType = 0
 
         if 'automata' not in data:
-            raise Exception('No automata provided as parameter in body')
+            raise ApiError('Bad parameters','No automata provided as parameter in body')
 
         rawAutomata = data['automata']
 
         if 'startingState' not in rawAutomata:
-            raise Exception('No starting state')
+            raise ApiError('No start state','No starting state')
 
         if 'states' not in rawAutomata or len(rawAutomata['states']) == 0:
-            raise Exception('No states found')
+            raise ApiError('Empty automata','No states found')
 
 
         finalStates = [i for i, state in enumerate(rawAutomata["states"]) if state is 1]
 
         if finalStates is None or len(finalStates) is 0:
-            raise Exception('No final states found in automata')
+            raise ApiError('No final state','No final states found in automata')
 
         frontendDFA = FrontendDFA(rawAutomata["startingState"],rawAutomata["transitions"],rawAutomata['states'],rawAutomata['statesLookup'],rawAutomata['symbolsLookup'])
         minimalDFA = MinimalistDFA(frontendDFA.startingState,finalStates,frontendDFA.transitions)
@@ -54,8 +55,8 @@ def minimize():
 
         processed = printOutToFrontend(printOut,rawAutomata["symbolsLookup"], rawAutomata["statesLookup"])
         return json.dumps(processed.__dict__)
-    except Exception as error:
-        return str(error), 400
+    except ApiError as error:
+        return json.dumps(error.__dict__), 400
 
 # Remove in production
 app.run(debug=True)

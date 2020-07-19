@@ -1,31 +1,8 @@
 Tura 1
----------
-Pair: [2,0] symbol: 0
----------
-Pair: [2,0] symbol: 1
----------
-Pair: [2,1] symbol: 0
-2 is entered by: 1 2
-1 is entered by: 0
-Can be added: 1 0
----------
-Pair: [2,1] symbol: 1
-2 is entered by: 1 2
-1 is entered by: 0
-
-Tura 2
----------
-Pair: [1,0] symbol: 0
----------
-Pair: [1,0] symbol: 1
 
 
-[0, 2, 1]
-   [0, 1]
-      [0]
+[0]
 
-Glued states: [[0], [1], [2]]
+Glued states: [[0]]
 	0	1	
-0_	1	1
-1	2	2
-2'	2	2
+0'_	0	0
