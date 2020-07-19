@@ -1,3 +1,4 @@
+import os
 import sys
 from loger import Loger
 from dfa import FrontendDFA, MinimalistDFA
@@ -14,7 +15,7 @@ import json
 
 
 app = Flask(__name__)
-cors = CORS(app)
+cors = CORS(app, origins=['https://www.drawing-automata.xyz', 'localhost'])
 app.config['CORS_HEADERS'] = 'Content-Type'
 limiter = Limiter(
     app,
@@ -66,4 +67,10 @@ def minimize():
         return json.dumps(error.__dict__), 400
 
 # Remove in production
-app.run(debug=False)
+
+if 'PORT' in os.environ:
+    port = os.environ['PORT']
+else:
+    port = 5000
+
+app.run(debug=False,host='0.0.0.0',port=port)
