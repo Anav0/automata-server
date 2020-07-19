@@ -22,7 +22,7 @@ limiter = Limiter(
     key_func=get_remote_address,
 )
 
-@app.route('/minimize',methods=['GET','POST'])
+@app.route('/minimize',methods=['POST'])
 @cross_origin()
 @limiter.limit('1 per second')
 def minimize():
