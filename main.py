@@ -9,14 +9,22 @@ from helpers import minimalistDFAfromFile, printOutToFrontend
 from flask import Flask, request, abort
 from flask_cors import CORS, cross_origin
 from apiError import ApiError
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 import json
+
 
 app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
+limiter = Limiter(
+    app,
+    key_func=get_remote_address,
+)
 
 @app.route('/minimize',methods=['GET','POST'])
 @cross_origin()
+@limiter.limit('1 per second')
 def minimize():
     try:
         data = json.loads(request.data)
