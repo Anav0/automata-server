@@ -8,7 +8,7 @@ def minimalistDFAfromFile(filePath):
     with open(filePath,'r') as file:
         index = 0
         for line in file:
-            if index is 0:
+            if index == 0:
                 index+=1
                 continue
             splitedLine = line.strip().split("\t")
@@ -18,7 +18,7 @@ def minimalistDFAfromFile(filePath):
                 finalStates.append(index-1)
             transition = []
             for i, char in enumerate(splitedLine):
-                if i is 0: continue
+                if i == 0: continue
                 transition.append(splitedLine[i])
             transitionTable.append(transition)
             index+=1

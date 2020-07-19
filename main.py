@@ -4,7 +4,6 @@ from dfa import FrontendDFA, MinimalistDFA
 from hopcroft import HopcroftAlghorithm
 from moore import MooreAlghorithm
 from symbols import acceptingStateChar, startStateChar, noTransitionChar
-import argparse
 from helpers import minimalistDFAfromFile, printOutToFrontend
 from flask import Flask, request, abort
 from flask_cors import CORS, cross_origin
@@ -44,9 +43,9 @@ def minimize():
             raise ApiError('Empty automata','No states found')
 
 
-        finalStates = [i for i, state in enumerate(rawAutomata["states"]) if state is 1]
+        finalStates = [i for i, state in enumerate(rawAutomata["states"]) if state == 1]
 
-        if finalStates is None or len(finalStates) is 0:
+        if finalStates is None or len(finalStates) == 0:
             raise ApiError('No final state','No final states found in automata')
 
         frontendDFA = FrontendDFA(rawAutomata["startingState"],rawAutomata["transitions"],rawAutomata['states'],rawAutomata['statesLookup'],rawAutomata['symbolsLookup'])
@@ -67,4 +66,4 @@ def minimize():
         return json.dumps(error.__dict__), 400
 
 # Remove in production
-app.run(debug=True)
+app.run(debug=False)

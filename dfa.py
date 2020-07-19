@@ -64,7 +64,7 @@ class FrontendDFA:
             if stateName == "":
                 raise ApiError('Noname state','One of states has no name')
 
-        finalStates = [i for i, state in enumerate(self.states) if state is 1]
+        finalStates = [i for i, state in enumerate(self.states) if state == 1]
 
         if finalStates is None or len(finalStates) < 1:
             raise ApiError('No final state','No final states found')
