@@ -27,10 +27,15 @@ limiter = Limiter(
 @limiter.limit('1 per second')
 def minimize():
     try:
-        data = json.loads(request.data)
+        try:
+            data = json.loads(request.data)
+        except Exception as error:
+            raise ApiError('No body','No JSON body found')
 
-        minimizationType = data['type']
-        if minimizationType is None: minimizationType = 0
+        if 'type' in data:
+            minimizationType = data['type']
+        else:
+            minimizationType = 0
 
         if 'automata' not in data:
             raise ApiError('Bad parameters','No automata provided as parameter in body')
@@ -65,6 +70,8 @@ def minimize():
         return json.dumps(processed.__dict__)
     except ApiError as error:
         return json.dumps(error.__dict__), 400
+    except Exception as erro2:
+        return str(erro2), 500
 
 # Remove in production
 
